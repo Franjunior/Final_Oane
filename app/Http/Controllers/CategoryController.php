@@ -47,11 +47,11 @@ class CategoryController extends Controller
         ]);
         return Redirect()->route('AllCat')->with('success', 'Updated Succesfully');
     }
-    public function Delete($id)
+    public function delete(Request $request, $id)
     {
-        Category::find($id)->delete([
-            'user_id' => Auth::user()->id,
-        ]);
-        return Redirect()->route('AllCat')->with('success', 'Deteled Succesfully');
+        $category = Category::find($id);
+        $category->forceDelete();
+    
+        return redirect()->route('AllCat')->with('success', 'Deleted Successfully');
     }
 }
