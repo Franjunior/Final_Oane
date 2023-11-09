@@ -7,42 +7,60 @@
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
-     
-            <table style="width: 100%; border: 1px solid #ddd; text-align:center;">
-  <thead class="thead-dark">
-    <tr>
-      <th scope="col">ID</th>
-      <th scope="col">CATEGORY NAME</th>
-      <th scope="col">USER ID</th>
-      <th scope="col">CREATED AT</th>
-    </tr>
-  </thead>
-  <tbody>
-  @php
+            <div class="column">
+                <div class="row">
+                    <div class="col-md-8">
+
+                        <div class="card">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">Id</th>
+                                        <th scope="col">Category Name</th>
+                                        <th scope="col">User Id</th>
+                                        <th scope="col">Created At</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @php
                                     $i = 1;
                                     @endphp
-  @foreach ($categories as $category)
-    <tr>
-    <th scope="row">{{$i++}}</th>
-      <td>{{$category->category_name}}</td>
-    <td>{{$category->user_id}}</td>
-    <td>{{$category->created_at}}</td>
 
-    </tr>
-    @endforeach
+                                    @foreach ($categories as $category)
+                                    <tr>
+                                        <th scope="row">{{$categories->firstItem()+$loop->index}}</th>
+                                        <td>{{$category->category_name}}</td>
+                                        <td>{{$category->user_id}}</td>
+                                        <td>{{$category->created_at->diffForHumans()}}</td>
+                                        <td>
+                                            <a href="{{url('category/edit/'.$category->id)}}" class="btn btn-info">Edit</a>
+                                        </td>
+                                        <td>
+                                            <form action={{ route('delete.category', ['id' => $category->id]) }} method="POST">
+                                                @csrf
+                                                <button type="submit" class="btn btn-danger">
+                                                    Delete
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                            {{$categories->links()}}
+                        </div>
+                    </div>
 
-  </tbody>
-</table>
-
-
-                    <div class="col-md-4">
+                    <div class=" col-md-4">
                         <div class="card">
-                            <form method="POST" action="{{ route('category') }}">
+                            <form action="{{ route('add.category') }}" method="POST">
                                 @csrf
                                 <div class="mb-3">
                                     <label for="category_name" class="form-label">Category Name</label>
                                     <input type="text" class="form-control" name="category_name">
+                                    @error('category_name')
+                                    <span class="text-danger">{{$message}}</span>
+                                    @enderror
                                 </div>
 
                                 <button type="submit" class="btn btn-primary">Submit</button>
